@@ -1,0 +1,83 @@
+%% Uppgift 1
+f=@(x) 0.5.*(x-2).^2-2.*cos(2.*x)-1.5;
+x=linspace(-10,10,100);
+a1=-1; a2=2.5; a3=2.8;
+df=@(x) 4.*sin(2.*x) + x -2;
+L1=@(x) f(a1) + df(a1).*(x-a1);
+L2=@(x) f(a2) + df(a2).*(x-a2);
+L3=@(x) f(a3) + df(a3).*(x-a3);
+plot(x,f(x), 'b', a1,f(a1),'-*',a2,f(a2),'-x',a3,f(a3),'-o'); hold on
+grid on;
+plot(x,L1(x),'k');
+plot(x,L2(x),'m');
+plot(x,L3(x),'r');
+%% Uppgift 2
+
+f=@(x,y) x.*cos(2.*x).*sin(y); % x=x1, y=x2 för att göra det enklare att läsa
+dfdx=@(x,y) (cos(2.*x)+2*x.*sin(2.*x)).*sin(y); %derivata med avseende på x, right? - John 'Blev klar med envaren igår' Sandberg
+dfdy=@(x,y) x.*cos(2.*x).*(-cos(y)); % derivata med avseende på y, men kanske inte
+
+L=@(x,y,a,b) f(a,b)+dfdx(a,b)*(x-a)+dfdy(a,b)*(y-b);
+n=@(x,y)[dfdx(x,y); dfdy(x,y);-1]; % varför -1? är det för att normalvektorn 3 dimensionell?
+
+a=3; b=1; % Bara för att göra så att man slipper a1 och a2
+p0=[a;b;f(a,b)]; n0=n(a,b); 
+x=linspace(-5,5,40); y=linspace(-pi,pi,40);
+[X,Y]=meshgrid(x,y);
+
+Z=f(X,Y); T=L(X,Y,a,b);
+surf(x,y,Z);
+hold on
+surf(x,y,T,'FaceColor','b','FaceAlpha', 0.45)
+s=[-1 1];
+plot3(p0(1)+s*n0(1),p0(2)+s*n0(2),p0(3)+s*n0(3),'m','linewidth',2)
+hold off
+xlabel('x'), ylabel('y'), zlabel('z'), box on
+axis equal, axis vis3d, rotate3d on
+
+%% Uppgift 3
+
+f=@(x,y) [x.^3+y.^2;
+    exp(x.*y)+x+y-2]; % f är en kombination av två funktioner f1 och f2 som båda beror på x1(x) 
+% och x2(y). jag väljer att skriva dem som en differntial ekvation för att
+% kunna utnyttja dem samtidigt.
+Df=@(x,y) [3*x.^2+y.^2 x.^3+2.*y;
+           y.*exp(x.*y)+1+y x.*exp(x.*y)+x+1];
+
+L=@(x,y,a,b) f(a,b)+Df(a,b).*[x-a;y-b];
+
+a=2; b=1;
+x=linspace(-5,5,40); y=linspace(-5,5,40);
+[X,Y]=meshgrid(x,y);
+
+Z=f(X,Y); T=L(X,Y,a,b);
+surf(x,y,Z);
+hold on
+surf(x,y,T,'FaceColor','b','FaceAlpha', 0.45)
+hold off
+xlabel('x'), ylabel('y'), zlabel('z'), box on
+axis equal, axis vis3d, rotate3d on
+
+%% Uppgift 3 test
+
+f=@(x,y) [x.^3+y.^2;
+    exp(x.*y)+x+y-2]; % f är en kombination av två funktioner f1 och f2 som båda beror på x1(x) 
+% och x2(y). jag väljer att skriva dem som en differntial ekvation för att
+% kunna utnyttja dem samtidigt.
+Df=@(x,y) [3*x.^2+y.^2 x.^3+2.*y;
+           y.*exp(x.*y)+1+y x.*exp(x.*y)+x+1];
+
+L=@(x,y,a,b) f(a,b)+Df(a,b).*[x-a;y-b];
+
+a=2; b=1;
+x=linspace(-5,5,40); y=linspace(-5,5,40);
+[X,Y]=meshgrid(x,y);
+
+Z=f(X,Y); T=L(X,Y,a,b);
+surf(x,y,Z);
+hold on
+surf(x,y,T,'FaceColor','b','FaceAlpha', 0.45)
+hold off
+xlabel('x'), ylabel('y'), zlabel('z'), box on
+axis equal, axis vis3d, rotate3d on
+
